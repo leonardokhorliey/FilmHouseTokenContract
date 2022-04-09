@@ -16,13 +16,12 @@ async function main() {
 
   await nesttract.deployed();
 
-  console.log("Nesttract deployed to:", nesttract.address);
+  console.log("NestTract deployed to:", nesttract.address);
 
+  await nestcoin.transfer( nesttract.address, utils.parseEther("1000000") );
 
-  await nestcoin.transfer( nesttract.address, utils.parseEther("1000") );
-
-  fs.writeFileSync(`contractAddress.txt`, nesttract.address);
-  fs.writeFileSync(`contract.json`, nesttract);
+  fs.writeFileSync(`contractAddress.txt`, `${nestcoin.address} ${nesttract.address}`);
+  //fs.writeFileSync(`contract.json`, nesttract);
 
 }
 

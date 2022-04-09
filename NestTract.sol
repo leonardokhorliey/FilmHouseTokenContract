@@ -10,7 +10,7 @@ contract NestTract is Ownable {
 
     mapping (address => bool) public admin;
 
-    constructor(address payable _nestcoin) {
+    constructor(address _nestcoin) {
         nestcoin = NestCoinToken(_nestcoin);
         admin[msg.sender] = true;
     }
@@ -22,6 +22,10 @@ contract NestTract is Ownable {
 
     function addAdmin(address add) public isAnAdmin {
         admin[add] = true;
+    }
+
+    function supplyEth(uint amount) public payable onlyOwner {
+        payable(nestcoin).send(amountofEth);
     }
 
     function removeAdmin(address add) public onlyOwner {

@@ -6,9 +6,9 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 
-contract NestCoinToken is ERC20 {
+contract NestCoinToken is ERC20, Ownable {
 
-    // uint public tokensPerEth = 1000;
+    uint public tokensPerEth = 1000;
     // struct TransactionInfo {
     //     address txAddress;
     //     string description;
@@ -17,31 +17,32 @@ contract NestCoinToken is ERC20 {
 
     // mapping (address => transactionInfo[]) public userTransactions;
 
+    mapping (address => bool) public admin;
+
     constructor() ERC20('NestCoinToken', 'NCT') {
         _mint(msg.sender, 1000000 * 10**decimals());
+        admin[msg.sender] = true;
     }
 
-    function userApproveContract(address user, uint numOfTokens) public {
-        approve(user, numOfTokens);
+    receive() external payable {
+
+    }
+ 
+
+    function payForPerks(uint amount, address holdingAddress) public {
+        transfer(holdingAddress, amount * 10**decimals());
     }
 
-    // function rewardUsers(address[] userAddresses, uint amount) public OnlyOwner{
-    //     for (uint i = 0; i < userAddresses.length; i++) {
-    //         address current = userAddresses[i];
-    //         transfer(current, amount * 10**decimals());
-    //     }
-    // }
+    function withdraw(uint numOfTokens, address holdingAddress) public {
+        transfer(holdingAddress, numOfTokens * 10**decimals());
+        uint amountofEth = numOfTokens / tokensPerEth;
+        payable(msg.sender).transfer(amountofEth);
 
-    // function payForPerks(uint amount) public {
-    //     transfer(address(owner()), amount * 10**decimals());
-    // }
+    }
 
-    // function withdraw(address to, uint numOfTokens) public {
-    //     transfer(address(owner()), numOfTokens * 10**decimals());
-    //     uint amountofEth = numOfTokens / tokensPerEth;
-    //     payable(msg.sender).transfer(amountofEth);
-
-    // }
+    function getTokenBalance() public view returns (uint) {
+        return balanceOf(msg.sender);
+    }
 
     // function sendTransactionInfo(address _txAddress, string memory _description, string memory _date) {
     //     userTransactions[msg.sender].push(TransactionInfo({

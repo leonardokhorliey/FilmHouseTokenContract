@@ -1,4 +1,6 @@
 require("@nomiclabs/hardhat-waffle");
+require("@nomiclabs/hardhat-etherscan");
+require('dotenv').config();
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -28,8 +30,11 @@ module.exports = {
       */
     },
     rinkeby: {
-      url: "https://rinkeby.infura.io/v3/b913395718bd49d581b52b56347c01f8", 
-      accounts: ["714d2202b192865aa486543e5e8f3c5a513125d358bea99c333dba36eb4faebb"]
+      url: `https://rinkeby.infura.io/v3/${process.env.PUBLIC_INFURA_APP_ID}`, 
+      accounts: [process.env.PUBLIC_ACCOUNT_KEY]
     }
+  },
+  etherscan: {
+    apiKey: "E792UB488IBNQUQK3ZUPKNZ5PEHCNR7ENC"
   }
 };
