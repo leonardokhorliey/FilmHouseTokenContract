@@ -2,34 +2,23 @@
 const { ethers } = require("hardhat");
 const { use, expect } = require("chai");
 const { solidity } = require("ethereum-waffle");
+const { utils } = require("ethers");
 
 use(solidity);
 
-
-describe("Greeter", function () {
-  it("Should return the new greeting once it's changed", async function () {
-    const Greeter = await ethers.getContractFactory("Greeter");
-    const greeter = await Greeter.deploy("Hello, world!");
-    await greeter.deployed();
-
-    expect(await greeter.greet()).to.equal("Hello, world!");
-
-    const setGreetingTx = await greeter.setGreeting("Hola, mundo!");
-
-    // wait until the transaction is mined
-    await setGreetingTx.wait();
-
-    expect(await greeter.greet()).to.equal("Hola, mundo!");
-  });
-});
-
 describe("NestCoinToken", function () {
   it("Should mint 1000000 tokens to msg.sender", async () => {
+    
     const NestCoinToken = await hre.ethers.getContractFactory("NestCoinToken");
     const nestcoin = await NestCoinToken.deploy();
 
     await nestcoin.deployed();
-    expect(await nestcoin.balanceOf("0x940F80Cd7cA57a2565DAF3D79980f90A32233b80")).to.equal(1000000000000000000000000);
+    const owner = nestcoin.deployTransaction.from;
+
+    //await nestcoin.transfer( nestcoin.address, utils.parseEther("1000000") );
+
+    const valueMinted = await nestcoin.balanceOf(owner);
+    expect(valueMinted).to.equal(ethers.utils.parseEther("1000000"));
   });
 });
 
@@ -71,9 +60,16 @@ describe("NestTract", function () {
 
     await nesttract.rewardUsers(userstoReward, 5);
 
-    expect(await nestcoin.balanceOf(userstoReward[0])).to.equal(ethers.utils.parseEther("5"));
-    expect(await nestcoin.balanceOf(userstoReward[1])).to.equal(ethers.utils.parseEther("5"));
-    expect(await nestcoin.balanceOf(nesttract.address)).to.equal(ethers.utils.parseEther("999990"));
+    const firstBal = await nestcoin.balanceOf(userstoReward[0]);
+    //firstBal = firstBal.toString();
+    const secondBal = await nestcoin.balanceOf(userstoReward[1]);
+    //secondBal = secondBal.toString();
+    const addressBal = await nestcoin.balanceOf(nesttract.address);
+    //addressBal = addressBal.toString();
+
+    expect(firstBal).to.equal(utils.parseEther("5"));
+    expect(secondBal).to.equal(utils.parseEther("5"));
+    expect(addressBal).to.equal(utils.parseEther("999990"));
 
   });
 
